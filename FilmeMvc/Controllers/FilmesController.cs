@@ -26,8 +26,10 @@ namespace FilmeMvc.Controllers
         }
 
         // GET: Filmes
-        public async Task<IActionResult> Index(string StrPesquisa)
+        public async Task<IActionResult> Index(string generoFilme, string StrPesquisa)
         {
+            IQueryable<string> queryGenero = from m in _context.Filme orderby m.Genero select m.Genero;
+
             var filmes = from m in _context.Filme select m;
 
             if (!string.IsNullOrEmpty(StrPesquisa))
@@ -35,7 +37,18 @@ namespace FilmeMvc.Controllers
                 filmes = filmes.Where(s => s.Titulo.Contains(StrPesquisa));
             }
 
-            return View(await filmes.ToListAsync());
+            if (!string.IsNullOrEmpty(generoFilme))
+            {
+                filmes = filmes.Where(x => x.Genero == generoFilme);
+            }
+
+            var generoFilmeVM = new FilmeGeneroViewModel
+            {
+                Generos = new SelectList(await queryGenero.Distinct().ToListAsync()),
+                Filmes = await filmes.ToListAsync()
+            };
+
+            return View(generoFilmeVM);
         }
 
         // GET: Filmes/Details/5
@@ -67,7 +80,7 @@ namespace FilmeMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,DataLancamento,Genero,Preco")] Filme filme)
+        public async Task<IActionResult> Create([Bind("Id,Titulo,DataLancamento,Genero,Preco,Avaliacao")] Filme filme)
         {
             if (ModelState.IsValid)
             {
@@ -99,7 +112,7 @@ namespace FilmeMvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,DataLancamento,Genero,Preco")] Filme filme)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,DataLancamento,Genero,Preco,Avaliacao")] Filme filme)
         {
             if (id != filme.Id)
             {

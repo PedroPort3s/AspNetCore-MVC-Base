@@ -4,14 +4,16 @@ using FilmeMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FilmeMvc.Migrations
 {
     [DbContext(typeof(MvcFilmeContext))]
-    partial class MvcFilmeContextModelSnapshot : ModelSnapshot
+    [Migration("20200305043040_Avaliacao")]
+    partial class Avaliacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
